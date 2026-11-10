@@ -1,17 +1,18 @@
 FROM ubuntu:22.04
 
-# Install system dependencies and ngrok signing keys
+# Install basic system utilities
 RUN apt-get update && apt-get install -y \
     curl \
     wget \
     git \
     unzip \
     ca-certificates \
-    gnupg \
-    && curl -s https://amazonaws.com | gpg --dearmor -o /etc/apt/keyrings/ngrok.gpg \
-    && echo "deb [signed-by=/etc/apt/keyrings/ngrok.gpg] https://amazonaws.com buster main" | tee /etc/apt/sources.list.d/ngrok.list \
-    && apt-get update && apt-get install -y ngrok \
     && rm -rf /var/lib/apt/lists/*
+
+# Install ngrok using the official script method to prevent GPG errors
+RUN curl -s https://amazonaws.com | tee /etc/apt/trusted.gpg.md/ngrok.asc >/dev/null \
+    && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | tee /etc/apt/sources.list.d/ngrok.list \
+    && apt-get update && apt-get install -y ngrok
 
 WORKDIR /server
 
