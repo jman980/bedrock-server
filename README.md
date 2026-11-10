@@ -1,0 +1,2 @@
+# bedrock-server
+alternos bot
